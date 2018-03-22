@@ -27,15 +27,17 @@ public class OutputPane extends BorderPane {
 		setTop(title);
 		setCenter(content);
 	}
+
 	public void setText(String text) {
 		content.setText(text);
 	}
+
 	public String getText() {
 		return content.getText();
 	}
+
 	public void writeToFile(File file) {
-		try {
-			PrintStream out = new PrintStream(new FileOutputStream(file));
+		try (PrintStream out = new PrintStream(new FileOutputStream(file))){
 			out.print(this.getText());
 			out.close();
 		} catch(Exception exception) {

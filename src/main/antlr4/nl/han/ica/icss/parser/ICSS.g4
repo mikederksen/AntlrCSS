@@ -1,51 +1,27 @@
 grammar ICSS;
 
-stylesheet
-    : identifier EOF
-    ;
+stylesheet: block* EOF;
 
-identifier
-    : IDENTIFIERMARK IDENTIFIERNAME
-    ;
+block: IDENTIFIER OPENBRACKET statement* CLOSEBRACKET;
+statement: colorStatement | widthStatement;
+colorStatement: COLORKEY KVSEP COLORVALUE CLOSESIGN;
+widthStatement: WIDTHKEY KVSEP SIZEPX CLOSESIGN;
 
-IDENTIFIERMARK
-    : '.'
-    | '#'
-    ;
+COLORKEY: 'background-color' | 'color';
+COLORVALUE: '#' HEX HEX HEX HEX HEX HEX;
 
-IDENTIFIERNAME
-    : [a-zA-Z]+
-    ;
+WIDTHKEY: 'width';
+SIZEPX: [1-9] [0-9]* 'px';
 
-OPENBRACKET
-    : '{'
-    ;
+IDENTIFIER: IDENTIFIERNAME | CLASS | ID;
+CLASS: '.' IDENTIFIERNAME;
+ID: '#' IDENTIFIERNAME;
+IDENTIFIERNAME: [a-zA-Z]+;
 
-CLOSEBRACKET
-    : '}'
-    ;
+HEX: [0-9A-Fa-f];
+OPENBRACKET: '{';
+CLOSEBRACKET: '}';
+CLOSESIGN: ';';
+KVSEP: ':';
 
-WS
-    : [ \t\r\n]+ -> skip
-    ;
-
-
-
-
-
-//p {
-//	background-color: #ffffff;
-//	width: 500px;
-//}
-//
-//a {
-//	color: #ff0000;
-//}
-//
-//#menu {
-//	width: 520px;
-//}
-//
-//.menu {
-//	color: #000000;
-//}
+WS: [ \t\r\n]+ -> skip;
