@@ -1,27 +1,39 @@
 grammar ICSS;
 
-stylesheet: block* EOF;
+stylesheet: variableDef* block* EOF;
 
-block: IDENTIFIER OPENBRACKET statement* CLOSEBRACKET;
+variableDef: 'let' variableKey 'is' variableVal CLOSE_SIGN;
+block: identifier OPEN_BRACKET statement* CLOSE_BRACKET;
+
 statement: colorStatement | widthStatement;
-colorStatement: COLORKEY KVSEP COLORVALUE CLOSESIGN;
-widthStatement: WIDTHKEY KVSEP SIZEPX CLOSESIGN;
+colorStatement: COLOR_KEY KV_SEP colorVal CLOSE_SIGN;
+widthStatement: WIDTH_KW KV_SEP widthVal CLOSE_SIGN;
 
-COLORKEY: 'background-color' | 'color';
-COLORVALUE: '#' HEX HEX HEX HEX HEX HEX;
+variableVal: hexVal | sizePx;
+sizePx: AMOUNT 'px';
+variableKey: '$' identifier;
 
-WIDTHKEY: 'width';
-SIZEPX: [1-9] [0-9]* 'px';
+colorVal: hexVal | variableKey;
+widthVal: sizePx | variableKey;
 
-IDENTIFIER: IDENTIFIERNAME | CLASS | ID;
-CLASS: '.' IDENTIFIERNAME;
-ID: '#' IDENTIFIERNAME;
-IDENTIFIERNAME: [a-zA-Z]+;
+hexVal: '#' HEX_AMOUNT;
 
+identifier: IDENTIFIER_NAME | class | id;
+class: '.' IDENTIFIER_NAME;
+id: '#' IDENTIFIER_NAME;
+
+HEX_AMOUNT: HEX HEX HEX HEX HEX HEX;
+
+OPEN_BRACKET: '{';
+CLOSE_BRACKET: '}';
+CLOSE_SIGN: ';';
+KV_SEP: ':';
+
+WIDTH_KW: 'width';
+COLOR_KEY: 'background-color' | 'color';
+
+IDENTIFIER_NAME: [a-zA-Z] ([a-zA-Z] | '-' | '_')*;
+AMOUNT: [1-9] [0-9]*;
 HEX: [0-9A-Fa-f];
-OPENBRACKET: '{';
-CLOSEBRACKET: '}';
-CLOSESIGN: ';';
-KVSEP: ':';
 
 WS: [ \t\r\n]+ -> skip;
