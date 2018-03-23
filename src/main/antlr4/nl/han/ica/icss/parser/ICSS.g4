@@ -13,14 +13,30 @@ variableVal
 
 
 block
-    : identifier OPEN_BRACKET statement* CLOSE_BRACKET
+    : identifier blockBody
+    | SWITCH variableKey switchBody
+    ;
+
+blockBody
+    : OPEN_BRACKET statement* CLOSE_BRACKET
+    ;
+
+switchBody
+    : switchCase* switchDefault
+    ;
+
+switchCase
+    : CASE NUMBER  blockBody
+    ;
+
+switchDefault
+    : DEFAULT blockBody
     ;
 
 statement
     : colorStatement
     | widthStatement
     ;
-
 
 colorStatement
     : COLOR_KEY KV_SEP colorVal CLOSE_SIGN
@@ -103,6 +119,18 @@ WIDTH_KW
 COLOR_KEY
     : 'background-color'
     | 'color'
+    ;
+
+SWITCH
+    : 'body switch'
+    ;
+
+CASE
+    : 'case'
+    ;
+
+DEFAULT
+    : 'default'
     ;
 
 
