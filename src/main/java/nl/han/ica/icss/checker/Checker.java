@@ -14,6 +14,7 @@ public class Checker {
 
         //Save the symbol table.
         ast.symboltable = symboltable;
+
         //Save the verdict
         if (ast.getErrors().isEmpty()) {
             ast.checked = true;

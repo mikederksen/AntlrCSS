@@ -193,8 +193,8 @@ public class Main extends Application implements ANTLRErrorListener {
         ICSSLexer lexer = new ICSSLexer(inputStream);
         lexer.removeErrorListeners();
         lexer.addErrorListener(this);
-        try {
 
+        try {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
             //Parse (with Antlr's generated parser)
@@ -221,9 +221,7 @@ public class Main extends Application implements ANTLRErrorListener {
             feedbackPane.addLine("Syntax error");
         }
 
-        //Update the AST Pane
-        astPane.update(this.ast);
-        updateToolbar();
+        updateASTPane();
     }
 
     private void check() {
@@ -231,7 +229,7 @@ public class Main extends Application implements ANTLRErrorListener {
             feedbackPane.clear();
             feedbackPane.addLine("Checking...");
 
-            (new Checker()).check(this.ast);
+            new Checker().check(this.ast);
 
             ArrayList<SemanticError> errors = this.ast.getErrors();
             if (!errors.isEmpty()) {
@@ -242,8 +240,7 @@ public class Main extends Application implements ANTLRErrorListener {
                 feedbackPane.addLine("AST is ok!");
             }
 
-            astPane.update(this.ast);
-            updateToolbar();
+            updateASTPane();
         }
     }
 
@@ -256,10 +253,7 @@ public class Main extends Application implements ANTLRErrorListener {
             new EvalExpressions().apply(ast);
             new ReduceSwitchRules().apply(ast);
 
-            //Update the AST Pane
-            astPane.update(this.ast);
-
-            updateToolbar();
+            updateASTPane();
         }
     }
 
@@ -288,6 +282,11 @@ public class Main extends Application implements ANTLRErrorListener {
                 generateButton.setDisable(false);
             }
         }
+    }
+
+    private void updateASTPane() {
+        astPane.update(this.ast);
+        updateToolbar();
     }
 
     //Catch ANTLR errors
