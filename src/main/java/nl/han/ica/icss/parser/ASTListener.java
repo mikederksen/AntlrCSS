@@ -8,16 +8,10 @@ import nl.han.ica.icss.ast.*;
  * This class extracts the ICSS Abstract Syntax Tree from the Antlr Parse tree.
  */
 public class ASTListener extends ICSSBaseListener {
-	// - Stylesheet
-	// 	- StyleRule (*)
-	//   - Selector
-	//   - Declaration (*)
-	//    - Value
-	//    - Expression
 
 	//Accumulator attributes:
 	private AST ast;
-	private Stack<ASTNode> currentContainer; //This is a hint...
+	private Stack<ASTNode> currentContainer;
 
 	public ASTListener() {
 		ast = new AST();
@@ -50,7 +44,7 @@ public class ASTListener extends ICSSBaseListener {
 
 	@Override
 	public void enterTagSelector(ICSSParser.TagSelectorContext ctx) {
-		currentContainer.push(new TagSelector(ctx.ELEMENT().getText()));
+		currentContainer.push(new TagSelector(ctx.ELEMENT().toString()));
 	}
 
 	@Override
@@ -59,14 +53,48 @@ public class ASTListener extends ICSSBaseListener {
 	}
 
 	@Override
-	public void enterDeclaration(ICSSParser.DeclarationContext ctx) {
-		System.out.println("Entering declaration: " + ctx.getText());
-	}
+    public void enterClassSelector(ICSSParser.ClassSelectorContext ctx) {
+        currentContainer.push(new ClassSelector(ctx.ELEMENT().toString()));
+    }
 
-	@Override
-	public void exitDeclaration(ICSSParser.DeclarationContext ctx) {
-		System.out.println("Exiting declaration: " + ctx.getText());
-	}
+    @Override
+    public void exitClassSelector(ICSSParser.ClassSelectorContext ctx) {
+        handleExit();
+    }
+
+    @Override
+    public void enterIdSelector(ICSSParser.IdSelectorContext ctx) {
+        currentContainer.push(new IdSelector(ctx.ELEMENT().toString()));
+    }
+
+    @Override
+    public void exitIdSelector(ICSSParser.IdSelectorContext ctx) {
+        handleExit();
+    }
+
+    @Override
+    public void enterWidthDeclaration(ICSSParser.WidthDeclarationContext ctx) {
+        Declaration declaration = new Declaration();
+        declaration.property = ctx.WIDTH_KW().toString();
+
+        currentContainer.push(declaration);
+    }
+
+    @Override
+    public void exitWidthDeclaration(ICSSParser.WidthDeclarationContext ctx) {
+        handleExit();
+    }
+
+    @Override
+    public void enterAmountPx(ICSSParser.AmountPxContext ctx) {
+	    int amount = Integer.parseInt(ctx.NUMBER().toString());
+	    currentContainer.push(new PixelLiteral(amount));
+    }
+
+    @Override
+    public void exitAmountPx(ICSSParser.AmountPxContext ctx) {
+	    handleExit();
+    }
 
 	private void handleExit() {
 		ASTNode currentNode = currentContainer.pop();

@@ -13,12 +13,12 @@ variableVal
 
 
 stylerule
-    : selector declaration
+    : selector block
     | SWITCH variableKey switchBody
     ;
 
-declaration
-    : OPEN_BRACKET statement* CLOSE_BRACKET
+block
+    : OPEN_BRACKET declaration* CLOSE_BRACKET
     ;
 
 switchBody
@@ -26,39 +26,39 @@ switchBody
     ;
 
 switchCase
-    : CASE NUMBER  declaration
+    : CASE NUMBER  block
     ;
 
 switchDefault
-    : DEFAULT declaration
+    : DEFAULT block
     ;
 
-statement
-    : colorStatement
-    | widthStatement
+declaration
+    : colorDeclaration
+    | widthDeclaration
     ;
 
-colorStatement
-    : COLOR_KEY KV_SEP colorVal CLOSE_SIGN
+colorDeclaration
+    : COLOR_KEY KV_SEP colorExpression CLOSE_SIGN
     ;
 
-widthStatement
-    : WIDTH_KW KV_SEP widthVal CLOSE_SIGN
+widthDeclaration
+    : WIDTH_KW KV_SEP widthExpression CLOSE_SIGN
     ;
 
 
-widthVal
+widthExpression
     : amount
     | variableKey
-    | widthVal '+' widthVal
-    | widthVal '*' widthVal
+    | widthExpression '+' widthExpression
+    | widthExpression '*' widthExpression
     ;
 
 variableKey
     : '$' selector
     ;
 
-colorVal
+colorExpression
     : hexVal
     | variableKey
     ;
