@@ -13,11 +13,11 @@ variableVal
 
 
 stylerule
-    : identifier blockBody
+    : selector declaration
     | SWITCH variableKey switchBody
     ;
 
-blockBody
+declaration
     : OPEN_BRACKET statement* CLOSE_BRACKET
     ;
 
@@ -26,11 +26,11 @@ switchBody
     ;
 
 switchCase
-    : CASE NUMBER  blockBody
+    : CASE NUMBER  declaration
     ;
 
 switchDefault
-    : DEFAULT blockBody
+    : DEFAULT declaration
     ;
 
 statement
@@ -55,7 +55,7 @@ widthVal
     ;
 
 variableKey
-    : '$' identifier
+    : '$' selector
     ;
 
 colorVal
@@ -76,17 +76,21 @@ hexVal
     ;
 
 
-identifier
-    : ELEMENT
-    | classElement
-    | idElemet
+selector
+    : tagSelector
+    | classSelector
+    | idSelector
     ;
 
-classElement
+tagSelector
+    : ELEMENT
+    ;
+
+classSelector
     : '.' ELEMENT
     ;
 
-idElemet
+idSelector
     : '#' ELEMENT
     ;
 
