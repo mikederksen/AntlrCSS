@@ -33,6 +33,26 @@ public class ASTListener extends ICSSBaseListener {
 	}
 
 	@Override
+    public void enterVariableDef(ICSSParser.VariableDefContext ctx) {
+	    currentContainer.push(new ConstantDefinition());
+    }
+
+    @Override
+    public void exitVariableDef(ICSSParser.VariableDefContext ctx) {
+        handleExit();
+    }
+
+    @Override
+    public void enterVariableKey(ICSSParser.VariableKeyContext ctx) {
+        currentContainer.push(new ConstantReference(ctx.VARIABLE_NAME().toString()));
+    }
+
+    @Override
+    public void exitVariableKey(ICSSParser.VariableKeyContext ctx) {
+        handleExit();
+    }
+
+	@Override
 	public void enterStylerule(ICSSParser.StyleruleContext ctx) {
 		currentContainer.push(new Stylerule());
 	}

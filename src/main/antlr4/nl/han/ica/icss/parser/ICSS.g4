@@ -6,6 +6,10 @@ variableDef
     : 'let' variableKey 'is' variableVal CLOSE_SIGN
     ;
 
+variableKey
+    : '$'VARIABLE_NAME
+    ;
+
 variableVal
     : hexVal
     | amount
@@ -52,10 +56,6 @@ widthExpression
     | variableKey
     | widthExpression '+' widthExpression
     | widthExpression '*' widthExpression
-    ;
-
-variableKey
-    : '$' selector
     ;
 
 colorExpression
@@ -138,6 +138,9 @@ DEFAULT
     ;
 
 
+VARIABLE_NAME
+    : [A-Z_]+;
+
 ELEMENT
     : [a-zA-Z] ([a-zA-Z] | '-' | '_')*
     ;
@@ -151,6 +154,6 @@ HEX
     : [0-9A-Fa-f]
     ;
 
-WS:
-    [ \t\r\n]+ -> skip
+WS
+    : [ \t\r\n]+ -> skip
     ;
