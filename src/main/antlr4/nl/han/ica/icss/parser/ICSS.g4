@@ -1,6 +1,6 @@
 grammar ICSS;
 
-stylesheet: variableDef* block* EOF;
+stylesheet: variableDef* stylerule* EOF;
 
 variableDef
     : 'let' variableKey 'is' variableVal CLOSE_SIGN
@@ -12,7 +12,7 @@ variableVal
     ;
 
 
-block
+stylerule
     : identifier blockBody
     | SWITCH variableKey switchBody
     ;
