@@ -45,22 +45,17 @@ public class ASTListener extends ICSSBaseListener {
 
 	@Override
 	public void exitStylerule(ICSSParser.StyleruleContext ctx) {
-		Stylerule currentStylerule = (Stylerule)currentContainer.pop();
-		(currentContainer.peek()).addChild(currentStylerule);
-	}
-
-
-
-	@Override
-	public void enterSelector(ICSSParser.SelectorContext ctx) {
-		System.out.println("Entering selector: " + ctx.getText());
-
-
+		handleExit();
 	}
 
 	@Override
-	public void exitSelector(ICSSParser.SelectorContext ctx) {
-		System.out.println("Exiting selector: " + ctx.getText());
+	public void enterTagSelector(ICSSParser.TagSelectorContext ctx) {
+		currentContainer.push(new TagSelector(ctx.ELEMENT().getText()));
+	}
+
+	@Override
+	public void exitTagSelector(ICSSParser.TagSelectorContext ctx) {
+		handleExit();
 	}
 
 	@Override
@@ -71,5 +66,10 @@ public class ASTListener extends ICSSBaseListener {
 	@Override
 	public void exitDeclaration(ICSSParser.DeclarationContext ctx) {
 		System.out.println("Exiting declaration: " + ctx.getText());
+	}
+
+	private void handleExit() {
+		ASTNode currentNode = currentContainer.pop();
+		(currentContainer.peek()).addChild(currentNode);
 	}
 }
