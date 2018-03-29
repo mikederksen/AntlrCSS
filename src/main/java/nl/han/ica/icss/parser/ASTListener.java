@@ -74,10 +74,7 @@ public class ASTListener extends ICSSBaseListener {
 
     @Override
     public void enterWidthDeclaration(ICSSParser.WidthDeclarationContext ctx) {
-        Declaration declaration = new Declaration();
-        declaration.property = ctx.WIDTH_KW().toString();
-
-        currentContainer.push(declaration);
+        pushDeclaration(ctx.WIDTH_KW().toString());
     }
 
     @Override
@@ -96,8 +93,35 @@ public class ASTListener extends ICSSBaseListener {
 	    handleExit();
     }
 
+    @Override
+    public void enterColorDeclaration(ICSSParser.ColorDeclarationContext ctx) {
+	    pushDeclaration(ctx.COLOR_KEY().toString());
+    }
+
+    @Override
+    public void exitColorDeclaration(ICSSParser.ColorDeclarationContext ctx) {
+	    handleExit();
+    }
+
+    @Override
+    public void enterHexVal(ICSSParser.HexValContext ctx) {
+	    currentContainer.push(new ColorLiteral(ctx.HEX_AMOUNT().toString()));
+    }
+
+    @Override
+    public void exitHexVal(ICSSParser.HexValContext ctx) {
+	    handleExit();
+    }
+
 	private void handleExit() {
 		ASTNode currentNode = currentContainer.pop();
 		(currentContainer.peek()).addChild(currentNode);
 	}
+
+	private void pushDeclaration(String property) {
+        Declaration declaration = new Declaration();
+        declaration.property = property;
+
+        currentContainer.push(declaration);
+    }
 }
