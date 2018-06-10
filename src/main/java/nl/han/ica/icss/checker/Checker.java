@@ -1,23 +1,44 @@
 package nl.han.ica.icss.checker;
 
-import java.util.HashMap;
+import nl.han.ica.icss.ast.AST;
+import nl.han.ica.icss.ast.ASTNode;
+import nl.han.ica.icss.ast.ConstantDefinition;
 
-import nl.han.ica.icss.ast.*;
+import java.util.HashMap;
 
 public class Checker {
 
     private HashMap<String, ConstantDefinition> symboltable;
 
     public void check(AST ast) {
-        //Clear symbol table
+
         symboltable = new HashMap<>();
 
-        //Save the symbol table.
+        findConstantDefinitions(ast.root);
+
         ast.symboltable = symboltable;
 
-        //Save the verdict
         if (ast.getErrors().isEmpty()) {
             ast.checked = true;
+        }
+    }
+
+
+    private void findConstantDefinitions(ASTNode currentNode) {
+
+        if (currentNode.getClass().isAssignableFrom(ConstantDefinition.class)) {
+            ConstantDefinition definition = (ConstantDefinition) currentNode;
+            String key = definition.name.name;
+
+            if(symboltable.containsKey(key)) {
+                currentNode.setError("Key is already declared (" + key + ")");
+            } else {
+                symboltable.put(definition.name.name, definition);
+            }
+        }
+
+        for (ASTNode child : currentNode.getChildren()) {
+            findConstantDefinitions(child);
         }
     }
 }

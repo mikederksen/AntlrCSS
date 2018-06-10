@@ -1,11 +1,8 @@
 package nl.han.ica.icss.ast;
 
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- * An assignment binds a expression to an identifier.
- *
- */
 public class ConstantDefinition extends ASTNode {
 	
 	public ConstantReference name;
@@ -26,9 +23,8 @@ public class ConstantDefinition extends ASTNode {
 	}
 
 	@Override
-	public ArrayList<ASTNode> getChildren() {
-
-		ArrayList<ASTNode> children = new ArrayList<>();
+	public List<ASTNode> getChildren() {
+		List<ASTNode> children = new ArrayList<>();
 		children.add(name);
 		children.add(expression);
 		return children;

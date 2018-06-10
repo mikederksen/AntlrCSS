@@ -42,7 +42,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -231,7 +230,8 @@ public class Main extends Application implements ANTLRErrorListener {
 
             new Checker().check(this.ast);
 
-            ArrayList<SemanticError> errors = this.ast.getErrors();
+            List<SemanticError> errors = this.ast.getErrors();
+
             if (!errors.isEmpty()) {
                 for (SemanticError e : errors) {
                     feedbackPane.addLine(e.toString());
