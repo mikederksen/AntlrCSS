@@ -11,6 +11,6 @@ public class IdSelector extends Selector {
         return "IdSelector " + id;
     }
     public String toString() {
-        return id;
+        return "#" + id;
     }
 }

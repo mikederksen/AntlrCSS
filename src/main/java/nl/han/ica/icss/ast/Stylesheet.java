@@ -1,8 +1,7 @@
 package nl.han.ica.icss.ast;
 
-import nl.han.ica.icss.checker.SemanticError;
-
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 /**
  * A stylesheet is the root node of the AST, it consists of one or more statements
@@ -35,4 +34,18 @@ public class Stylesheet extends ASTNode {
 	public void removeChild(ASTNode child) {
 		body.remove(child);
 	}
+
+	@Override
+	public String toString() {
+		return getChildren() != null && getChildren().size() > 0
+				? toStringOfChildren()
+				: "";
+	}
+
+	private String toStringOfChildren() {
+        return getChildren()
+                .stream()
+                .map(c -> c.toString() + "\n")
+                .collect(Collectors.joining());
+    }
 }

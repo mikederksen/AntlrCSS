@@ -12,6 +12,6 @@ public class ClassSelector extends Selector {
         return "ClassSelector " + cls;
     }
     public String toString() {
-        return cls;
+        return "." + cls;
     }
 }
