@@ -23,7 +23,6 @@ public class Checker {
         }
     }
 
-
     private void findConstantDefinitions(ASTNode currentNode) {
 
         if (currentNode.getClass().isAssignableFrom(ConstantDefinition.class)) {

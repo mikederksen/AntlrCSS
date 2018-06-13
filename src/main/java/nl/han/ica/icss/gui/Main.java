@@ -270,13 +270,14 @@ public class Main extends Application implements ANTLRErrorListener {
     }
 
     private void updateToolbar() {
-
         //Quick and ugly way...
         checkButton.setDisable(true);
         transformButton.setDisable(true);
         generateButton.setDisable(true);
+
         if (this.ast != null) {
             checkButton.setDisable(false);
+
             if (this.ast.checked) {
                 transformButton.setDisable(false);
                 generateButton.setDisable(false);
