@@ -14,6 +14,8 @@ public class AST {
     //We only need to track assignments in the symbol table.
     public HashMap<String, ConstantDefinition> symboltable;
 
+    public HashMap<String, List<Declaration>> constantReferences;
+
     //Keep track of whether this AST was typechecked
     public boolean checked;
 
