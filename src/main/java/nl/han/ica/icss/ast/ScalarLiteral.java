@@ -6,11 +6,18 @@ public class ScalarLiteral extends Literal {
     public ScalarLiteral(int value) {
         this.value = value;
     }
+
     public ScalarLiteral(String text) {
         this.value = Integer.parseInt(text);
     }
+
     @Override
     public String getNodeLabel() {
         return "Scalar literal (" + value + ")";
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(value);
     }
 }

@@ -33,32 +33,39 @@ public class Checker {
 
     private void findConstantDefinitions(ASTNode currentNode) {
 
-        if (currentNode.getClass().isAssignableFrom(ConstantDefinition.class)) {
-            ConstantDefinition definition = (ConstantDefinition) currentNode;
-            String key = definition.name.name;
+        if (currentNode != null) {
 
-            if(symboltable.containsKey(key)) {
-                currentNode.setError("Constant is already declared (" + key + ")");
-            } else {
-                symboltable.put(definition.name.name, definition);
+            if (currentNode.getClass().isAssignableFrom(ConstantDefinition.class)) {
+
+                ConstantDefinition definition = (ConstantDefinition) currentNode;
+                String key = definition.name.name;
+
+                if (symboltable.containsKey(key)) {
+                    currentNode.setError("Constant is already declared (" + key + ")");
+                } else {
+                    symboltable.put(definition.name.name, definition);
+                }
             }
-        }
 
-        for (ASTNode child : currentNode.getChildren()) {
-            findConstantDefinitions(child);
+            for (ASTNode child : currentNode.getChildren()) {
+                findConstantDefinitions(child);
+            }
         }
     }
 
     private void findConstantReferences(ASTNode currentNode) {
 
-        if (currentNode.getClass().isAssignableFrom(Declaration.class)) {
-            Declaration declaration = (Declaration) currentNode;
+        if (currentNode != null) {
 
-            if(declaration.expression.getClass().isAssignableFrom(ConstantReference.class)) {
-                saveConstantReference(declaration);
+            if (currentNode.getClass().isAssignableFrom(Declaration.class)) {
+                Declaration declaration = (Declaration) currentNode;
+
+                if (declaration.expression.getClass().isAssignableFrom(ConstantReference.class)) {
+                    saveConstantReference(declaration);
+                }
+            } else {
+                currentNode.getChildren().forEach(this::findConstantReferences);
             }
-        } else {
-            currentNode.getChildren().forEach(this::findConstantReferences);
         }
     }
 
@@ -66,9 +73,9 @@ public class Checker {
 
         String key = ((ConstantReference) declaration.expression).name;
 
-        if(!symboltable.containsKey(key)) {
+        if (!symboltable.containsKey(key)) {
             declaration.setError("Constant is not declared yet");
-        } else  if(constantreferences.containsKey(key)) {
+        } else if (constantreferences.containsKey(key)) {
             constantreferences.get(key).add(declaration);
         } else {
             List<Declaration> declarations = new ArrayList<>();

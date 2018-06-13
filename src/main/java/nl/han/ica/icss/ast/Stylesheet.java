@@ -9,27 +9,31 @@ import java.util.stream.Collectors;
  */
 public class Stylesheet extends ASTNode {
 
-
 	public ArrayList<ASTNode> body;
 	
 	public Stylesheet() {
 		this.body = new ArrayList<>();
 	}
+
 	public Stylesheet(ArrayList<ASTNode> body) {
 		this.body = body;
 	}
+
 	@Override
 	public String getNodeLabel() {
 		return "Stylesheet";
 	}
+
 	@Override
 	public ArrayList<ASTNode> getChildren() {
 		return this.body;
 	}
+
 	@Override
 	public void addChild(ASTNode child) {
-	    	body.add(child);
+		body.add(child);
 	}
+
 	@Override
 	public void removeChild(ASTNode child) {
 		body.remove(child);

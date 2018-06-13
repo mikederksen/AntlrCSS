@@ -1,15 +1,29 @@
 package nl.han.ica.icss.parser;
 
-import java.util.Stack;
+import nl.han.ica.icss.ast.AST;
+import nl.han.ica.icss.ast.ASTNode;
+import nl.han.ica.icss.ast.ClassSelector;
+import nl.han.ica.icss.ast.ColorLiteral;
+import nl.han.ica.icss.ast.ConstantDefinition;
+import nl.han.ica.icss.ast.ConstantReference;
+import nl.han.ica.icss.ast.Declaration;
+import nl.han.ica.icss.ast.IdSelector;
+import nl.han.ica.icss.ast.PixelLiteral;
+import nl.han.ica.icss.ast.ScalarLiteral;
+import nl.han.ica.icss.ast.Stylerule;
+import nl.han.ica.icss.ast.Stylesheet;
+import nl.han.ica.icss.ast.SwitchDefaultCase;
+import nl.han.ica.icss.ast.SwitchValueCase;
+import nl.han.ica.icss.ast.Switchrule;
+import nl.han.ica.icss.ast.TagSelector;
 
-import nl.han.ica.icss.ast.*;
+import java.util.Stack;
 
 /**
  * This class extracts the ICSS Abstract Syntax Tree from the Antlr Parse tree.
  */
 public class ASTListener extends ICSSBaseListener {
 
-	//Accumulator attributes:
 	private AST ast;
 	private Stack<ASTNode> currentContainer;
 
@@ -22,6 +36,7 @@ public class ASTListener extends ICSSBaseListener {
         return ast;
     }
 
+    // Stylesheet
 	@Override
 	public void enterStylesheet(ICSSParser.StylesheetContext ctx) {
 		currentContainer.push(new Stylesheet());
@@ -32,6 +47,17 @@ public class ASTListener extends ICSSBaseListener {
 		ast.setRoot((Stylesheet)currentContainer.pop());
 	}
 
+    @Override
+    public void enterStylerule(ICSSParser.StyleruleContext ctx) {
+        currentContainer.push(new Stylerule());
+    }
+
+    @Override
+    public void exitStylerule(ICSSParser.StyleruleContext ctx) {
+        handleExit();
+    }
+
+    // Constants
 	@Override
     public void enterVariableDef(ICSSParser.VariableDefContext ctx) {
 	    currentContainer.push(new ConstantDefinition());
@@ -52,16 +78,38 @@ public class ASTListener extends ICSSBaseListener {
         handleExit();
     }
 
-	@Override
-	public void enterStylerule(ICSSParser.StyleruleContext ctx) {
-		currentContainer.push(new Stylerule());
-	}
+    // Switch
+    @Override
+    public void enterSwitchRule(ICSSParser.SwitchRuleContext ctx) {
+        currentContainer.push(new Switchrule());
+    }
 
-	@Override
-	public void exitStylerule(ICSSParser.StyleruleContext ctx) {
-		handleExit();
-	}
+    @Override
+    public void exitSwitchRule(ICSSParser.SwitchRuleContext ctx) {
+        handleExit();
+    }
 
+    @Override
+    public void enterSwitchCase(ICSSParser.SwitchCaseContext ctx) {
+        currentContainer.push(new SwitchValueCase());
+    }
+
+    @Override
+    public void exitSwitchCase(ICSSParser.SwitchCaseContext ctx) {
+        handleExit();
+    }
+
+    @Override
+    public void enterSwitchDefault(ICSSParser.SwitchDefaultContext ctx) {
+        currentContainer.push(new SwitchDefaultCase());
+    }
+
+    @Override
+    public void exitSwitchDefault(ICSSParser.SwitchDefaultContext ctx) {
+	    handleExit();
+    }
+
+    // Selectors
 	@Override
 	public void enterTagSelector(ICSSParser.TagSelectorContext ctx) {
 		currentContainer.push(new TagSelector(ctx.ELEMENT().toString()));
@@ -92,6 +140,7 @@ public class ASTListener extends ICSSBaseListener {
         handleExit();
     }
 
+    // Declarations
     @Override
     public void enterWidthDeclaration(ICSSParser.WidthDeclarationContext ctx) {
         pushDeclaration(ctx.WIDTH_KW().toString());
@@ -102,6 +151,17 @@ public class ASTListener extends ICSSBaseListener {
         handleExit();
     }
 
+    @Override
+    public void enterColorDeclaration(ICSSParser.ColorDeclarationContext ctx) {
+        pushDeclaration(ctx.COLOR_KEY().toString());
+    }
+
+    @Override
+    public void exitColorDeclaration(ICSSParser.ColorDeclarationContext ctx) {
+        handleExit();
+    }
+
+    // Values
     @Override
     public void enterAmountPx(ICSSParser.AmountPxContext ctx) {
 	    int amount = Integer.parseInt(ctx.NUMBER().toString());
@@ -114,13 +174,13 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void enterColorDeclaration(ICSSParser.ColorDeclarationContext ctx) {
-	    pushDeclaration(ctx.COLOR_KEY().toString());
+    public void enterAmountScalar(ICSSParser.AmountScalarContext ctx) {
+        currentContainer.push(new ScalarLiteral(ctx.NUMBER().toString()));
     }
 
     @Override
-    public void exitColorDeclaration(ICSSParser.ColorDeclarationContext ctx) {
-	    handleExit();
+    public void exitAmountScalar(ICSSParser.AmountScalarContext ctx) {
+        handleExit();
     }
 
     @Override

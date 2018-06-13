@@ -13,6 +13,7 @@ public class Switchrule extends ASTNode {
     public String getNodeLabel() {
         return "Switch";
     }
+
     @Override
     public ArrayList<ASTNode> getChildren() {
         ArrayList<ASTNode> children = new ArrayList<>();
@@ -24,6 +25,7 @@ public class Switchrule extends ASTNode {
 
         return children;
     }
+
     @Override
     public void addChild(ASTNode child) {
         if(child instanceof Selector)
@@ -34,5 +36,10 @@ public class Switchrule extends ASTNode {
             valueCases.add((SwitchValueCase) child);
         if(child instanceof SwitchDefaultCase)
             defaultCase = (SwitchDefaultCase) child;
+    }
+
+    @Override
+    public String toString() {
+        return "switch ding";
     }
 }

@@ -1,6 +1,6 @@
 grammar ICSS;
 
-stylesheet: variableDef* stylerule* EOF;
+stylesheet: variableDef* something* EOF;
 
 variableDef
     : 'let' variableKey 'is' variableVal CLOSE_SIGN
@@ -15,26 +15,29 @@ variableVal
     | amount
     ;
 
-
-stylerule
-    : selector block
-    | SWITCH variableKey switchBody
-    ;
-
 block
     : OPEN_BRACKET declaration* CLOSE_BRACKET
     ;
 
-switchBody
-    : switchCase* switchDefault
+switchRule
+    : selector SWITCH variableKey switchCase* switchDefault
     ;
 
 switchCase
-    : CASE NUMBER  block
+    : CASE amountScalar block
     ;
 
 switchDefault
     : DEFAULT block
+    ;
+
+something
+    : stylerule
+    | switchRule
+    ;
+
+stylerule
+    : selector block
     ;
 
 declaration
@@ -65,10 +68,14 @@ colorExpression
 
 amount
     : amountPx
-    | NUMBER;
+    | amountScalar;
 
 amountPx
     : NUMBER 'px'
+    ;
+
+amountScalar
+    : NUMBER
     ;
 
 hexVal
@@ -126,7 +133,7 @@ COLOR_KEY
     ;
 
 SWITCH
-    : 'body switch'
+    : 'switch'
     ;
 
 CASE
