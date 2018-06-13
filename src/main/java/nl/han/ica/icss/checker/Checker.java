@@ -4,7 +4,6 @@ import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.ConstantDefinition;
 import nl.han.ica.icss.ast.ConstantReference;
-import nl.han.ica.icss.ast.Declaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.List;
 public class Checker {
 
     private HashMap<String, ConstantDefinition> symboltable;
-    private HashMap<String, List<Declaration>> constantreferences;
+    private HashMap<String, List<ASTNode>> constantreferences;
 
     public void check(AST ast) {
 
@@ -56,12 +55,13 @@ public class Checker {
     private void findConstantReferences(ASTNode currentNode) {
 
         if (currentNode != null) {
-
-            if (currentNode.getClass().isAssignableFrom(Declaration.class)) {
-                Declaration declaration = (Declaration) currentNode;
-
-                if (declaration.expression.getClass().isAssignableFrom(ConstantReference.class)) {
-                    saveConstantReference(declaration);
+            if (!(currentNode instanceof ConstantDefinition)) {
+                for (ASTNode child : currentNode.getChildren()) {
+                    if (child instanceof ConstantReference) {
+                        saveConstantReference((ConstantReference) child, currentNode);
+                    } else {
+                        findConstantReferences(child);
+                    }
                 }
             } else {
                 currentNode.getChildren().forEach(this::findConstantReferences);
@@ -69,17 +69,17 @@ public class Checker {
         }
     }
 
-    private void saveConstantReference(Declaration declaration) {
+    private void saveConstantReference(ConstantReference reference, ASTNode referenceParent) {
 
-        String key = ((ConstantReference) declaration.expression).name;
+        String key = reference.name;
 
         if (!symboltable.containsKey(key)) {
-            declaration.setError("Constant is not declared yet");
+            reference.setError("Constant is not declared yet");
         } else if (constantreferences.containsKey(key)) {
-            constantreferences.get(key).add(declaration);
+            constantreferences.get(key).add(referenceParent);
         } else {
-            List<Declaration> declarations = new ArrayList<>();
-            declarations.add(declaration);
+            List<ASTNode> declarations = new ArrayList<>();
+            declarations.add(referenceParent);
 
             constantreferences.put(key, declarations);
         }

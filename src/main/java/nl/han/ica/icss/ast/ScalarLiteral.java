@@ -20,4 +20,10 @@ public class ScalarLiteral extends Literal {
     public String toString() {
         return Integer.toString(value);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ScalarLiteral &&
+                ((ScalarLiteral) obj).value == value;
+    }
 }

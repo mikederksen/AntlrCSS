@@ -16,4 +16,10 @@ public class ColorLiteral extends Literal {
     public String toString() {
         return "#" + value;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ColorLiteral &&
+               ((ColorLiteral) obj).value.equals(value);
+    }
 }

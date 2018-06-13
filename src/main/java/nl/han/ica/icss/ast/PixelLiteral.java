@@ -20,4 +20,10 @@ public class PixelLiteral extends Literal {
     public String toString() {
         return Integer.toString(value) + "px";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof PixelLiteral &&
+                ((PixelLiteral) obj).value == value;
+    }
 }
