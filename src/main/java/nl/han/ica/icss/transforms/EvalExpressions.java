@@ -7,40 +7,34 @@ import nl.han.ica.icss.ast.ConstantReference;
 import nl.han.ica.icss.ast.Declaration;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class EvalExpressions implements Transform {
-
     private HashMap<String, ConstantDefinition> symboltable;
-    private HashMap<String, List<Declaration>> declarationsForConstant;
 
     @Override
     public void apply(AST ast) {
         symboltable = ast.symboltable;
-        declarationsForConstant = new HashMap<>();
 
-
-    }
-
-    private void findDeclarationsForConstantReferences() {
-        for (String key : symboltable.keySet()) {
-
-        }
+        findConstantDefinitions(ast.root);
+        symboltable.values().forEach(ast.root::removeChild);
+        symboltable.clear();
     }
 
     private void findConstantDefinitions(ASTNode currentNode) {
+        if (currentNode.getClass().isAssignableFrom(Declaration.class)) {
+            Declaration declaration = (Declaration) currentNode;
 
-        if (currentNode.getClass().isAssignableFrom(ConstantReference.class)) {
-            ConstantReference reference = (ConstantReference) currentNode;
-
-            // Check declaration type and child type reference
-            // Add to declarationsForConstants
-            // Transform
-            if(declarationsForConstant.containsKey(reference))
+            if(declaration.expression.getClass().isAssignableFrom(ConstantReference.class)) {
+                replaceExpressionInDeclaration(declaration);
+            }
+        } else {
+            currentNode.getChildren().forEach(this::findConstantDefinitions);
         }
     }
 
-    private void addNodeDing() {
+    private void replaceExpressionInDeclaration(Declaration declaration) {
+        String key = ((ConstantReference) declaration.expression).name;
 
+        declaration.expression = symboltable.get(key).expression;
     }
 }
