@@ -22,4 +22,31 @@ public class ColorLiteral extends Literal {
         return obj instanceof ColorLiteral &&
                ((ColorLiteral) obj).value.equals(value);
     }
+
+    @Override
+    public Literal add(Literal other) {
+        if (other instanceof ColorLiteral) {
+           throw new UnsupportedOperationException();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public Literal subtract(Literal other) {
+        if (other instanceof ColorLiteral) {
+            throw new UnsupportedOperationException();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    @Override
+    public Literal multiply(Literal other) {
+        if (other instanceof ColorLiteral) {
+            throw new UnsupportedOperationException();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
 }

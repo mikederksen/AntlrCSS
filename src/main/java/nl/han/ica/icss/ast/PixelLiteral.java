@@ -26,4 +26,26 @@ public class PixelLiteral extends Literal {
         return obj instanceof PixelLiteral &&
                 ((PixelLiteral) obj).value == value;
     }
+
+    @Override
+    public Literal add(Literal other) {
+        PixelLiteral otherPx = cast(other, PixelLiteral.class);
+
+        return new PixelLiteral(otherPx.value + value);
+    }
+
+    @Override
+    public Literal subtract(Literal other) {
+        PixelLiteral otherPx = cast(other, PixelLiteral.class);
+
+        return new PixelLiteral(otherPx.value - value);
+    }
+
+    @Override
+    public Literal multiply(Literal other) {
+        ScalarLiteral otherScalar = cast(other, ScalarLiteral.class);
+
+        return new PixelLiteral(otherScalar.value * value);
+    }
+
 }

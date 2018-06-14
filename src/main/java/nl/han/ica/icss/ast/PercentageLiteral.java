@@ -21,4 +21,25 @@ public class PercentageLiteral extends Literal {
         return obj instanceof PercentageLiteral &&
                ((PercentageLiteral) obj).value == value;
     }
+
+    @Override
+    public Literal add(Literal other) {
+        PercentageLiteral otherPercentage = cast(other, PercentageLiteral.class);
+
+        return new PercentageLiteral(value + otherPercentage.value);
+    }
+
+    @Override
+    public Literal subtract(Literal other) {
+        PercentageLiteral otherPercentage = cast(other, PercentageLiteral.class);
+
+        return new PercentageLiteral(value - otherPercentage.value);
+    }
+
+    @Override
+    public Literal multiply(Literal other) {
+        ScalarLiteral otherScalar = cast(other, ScalarLiteral.class);
+
+        return new PercentageLiteral(otherScalar.value * value);
+    }
 }

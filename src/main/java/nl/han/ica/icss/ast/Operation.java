@@ -32,4 +32,20 @@ public abstract class Operation extends Expression {
             rhs = null;
         }
     }
+
+    public abstract Literal calculate();
+
+    protected Literal getLiteralFromExpression(Expression expression) {
+        final Literal literal;
+
+        if(expression instanceof Operation) {
+            literal = ((Operation) expression).calculate();
+        } else if (expression instanceof Literal) {
+            literal = (Literal) expression;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+
+        return literal;
+    }
 }

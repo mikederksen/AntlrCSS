@@ -26,4 +26,27 @@ public class ScalarLiteral extends Literal {
         return obj instanceof ScalarLiteral &&
                 ((ScalarLiteral) obj).value == value;
     }
+
+    @Override
+    public Literal add(Literal other) {
+        ScalarLiteral otherScalar = cast(other, ScalarLiteral.class);
+
+        return new ScalarLiteral(value + otherScalar.value);
+    }
+
+    @Override
+    public Literal subtract(Literal other) {
+        ScalarLiteral otherScalar = cast(other, ScalarLiteral.class);
+
+        return new ScalarLiteral(value - otherScalar.value);
+    }
+
+    @Override
+    public Literal multiply(Literal other) {
+        if (!(other instanceof ScalarLiteral)) {
+            return other.multiply(this);
+        } else {
+            return new ScalarLiteral(value * ((ScalarLiteral)other).value);
+        }
+    }
 }
