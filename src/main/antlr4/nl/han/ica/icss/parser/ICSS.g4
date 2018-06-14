@@ -46,25 +46,21 @@ declaration
     ;
 
 colorDeclaration
-    : COLOR_KEY KV_SEP colorExpression CLOSE_SIGN
+    : COLOR_KEY KV_SEP valueExpression CLOSE_SIGN
     ;
 
 widthDeclaration
-    : WIDTH_KW KV_SEP widthExpression CLOSE_SIGN
+    : WIDTH_KW KV_SEP valueExpression CLOSE_SIGN
     ;
 
 
-widthExpression
+valueExpression
     : amount
+    | hexVal
     | variableKey
-    | widthExpression '*' widthExpression
-    | widthExpression '+' widthExpression
-    | widthExpression '-' widthExpression
-    ;
-
-colorExpression
-    : hexVal
-    | variableKey
+    | valueExpression '*' valueExpression
+    | valueExpression '+' valueExpression
+    | valueExpression '-' valueExpression
     ;
 
 amount

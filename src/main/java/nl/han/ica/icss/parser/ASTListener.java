@@ -198,19 +198,9 @@ public class ASTListener extends ICSSBaseListener {
 	    handleExit();
     }
 
-    @Override
-    public void enterAmount(ICSSParser.AmountContext ctx) {
-
-    }
-
-    @Override
-    public void exitAmount(ICSSParser.AmountContext ctx) {
-//        handleExit();
-    }
-
     // Calculation
     @Override
-    public void enterWidthExpression(ICSSParser.WidthExpressionContext ctx) {
+    public void enterValueExpression(ICSSParser.ValueExpressionContext ctx) {
         if(isCalculation(ctx)) {
             ParseTree operatorChild = ctx.children.get(1);
             String operator = operatorChild.getText();
@@ -235,10 +225,14 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
-    public void exitWidthExpression(ICSSParser.WidthExpressionContext ctx) {
+    public void exitValueExpression(ICSSParser.ValueExpressionContext ctx) {
         if(isCalculation(ctx)) {
-	        handleExit();
+            handleExit();
         }
+    }
+
+    private boolean isCalculation(ParserRuleContext ctx) {
+        return ctx.children != null && ctx.children.size() > 1;
     }
 
     private void handleExit() {
@@ -251,9 +245,5 @@ public class ASTListener extends ICSSBaseListener {
         declaration.property = property;
 
         currentContainer.push(declaration);
-    }
-
-    private boolean isCalculation(ParserRuleContext ctx) {
-        return ctx.children != null && ctx.children.size() > 1;
     }
 }
