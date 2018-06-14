@@ -17,7 +17,7 @@ public class ReduceSwitchRules implements Transform {
 
     private void findSwitchParent(ASTNode currentNode) {
         if (childrenContainSwitchrule(currentNode.getChildren())) {
-            solveSwitchRules(currentNode);
+            solveAllSwitchRules(currentNode);
         } else {
             currentNode.getChildren()
                     .forEach(this::findSwitchParent);
@@ -30,7 +30,8 @@ public class ReduceSwitchRules implements Transform {
                 .anyMatch(c -> c instanceof Switchrule);
     }
 
-    private void solveSwitchRules(ASTNode switchParent) {
+    private void solveAllSwitchRules(ASTNode switchParent) {
+        // Needed, since we can't edit the switchParent children while looping over them
         List<ASTNode> childrenClone = new ArrayList<>(switchParent.getChildren());
 
         childrenClone

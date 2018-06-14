@@ -24,6 +24,7 @@ import nl.han.ica.icss.parser.ASTListener;
 import nl.han.ica.icss.parser.ICSSLexer;
 import nl.han.ica.icss.parser.ICSSParser;
 import nl.han.ica.icss.transforms.EvalExpressions;
+import nl.han.ica.icss.transforms.MergeRules;
 import nl.han.ica.icss.transforms.ReduceSwitchRules;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.CharStream;
@@ -252,6 +253,7 @@ public class Main extends Application implements ANTLRErrorListener {
             //These are the transformations you need to implement
             new EvalExpressions().apply(ast);
             new ReduceSwitchRules().apply(ast);
+            new MergeRules().apply(ast);
 
             updateASTPane();
         }
