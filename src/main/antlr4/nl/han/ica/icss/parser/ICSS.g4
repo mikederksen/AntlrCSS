@@ -57,8 +57,9 @@ widthDeclaration
 widthExpression
     : amount
     | variableKey
-    | widthExpression '+' widthExpression
     | widthExpression '*' widthExpression
+    | widthExpression '+' widthExpression
+    | widthExpression '-' widthExpression
     ;
 
 colorExpression

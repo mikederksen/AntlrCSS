@@ -2,20 +2,25 @@ package nl.han.ica.icss.parser;
 
 import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
+import nl.han.ica.icss.ast.AddOperation;
 import nl.han.ica.icss.ast.ClassSelector;
 import nl.han.ica.icss.ast.ColorLiteral;
 import nl.han.ica.icss.ast.ConstantDefinition;
 import nl.han.ica.icss.ast.ConstantReference;
 import nl.han.ica.icss.ast.Declaration;
 import nl.han.ica.icss.ast.IdSelector;
+import nl.han.ica.icss.ast.MultiplyOperation;
 import nl.han.ica.icss.ast.PixelLiteral;
 import nl.han.ica.icss.ast.ScalarLiteral;
 import nl.han.ica.icss.ast.Stylerule;
 import nl.han.ica.icss.ast.Stylesheet;
+import nl.han.ica.icss.ast.SubtractOperation;
 import nl.han.ica.icss.ast.SwitchDefaultCase;
 import nl.han.ica.icss.ast.SwitchValueCase;
 import nl.han.ica.icss.ast.Switchrule;
 import nl.han.ica.icss.ast.TagSelector;
+import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.Stack;
 
@@ -193,7 +198,50 @@ public class ASTListener extends ICSSBaseListener {
 	    handleExit();
     }
 
-	private void handleExit() {
+    @Override
+    public void enterAmount(ICSSParser.AmountContext ctx) {
+
+    }
+
+    @Override
+    public void exitAmount(ICSSParser.AmountContext ctx) {
+//        handleExit();
+    }
+
+    // Calculation
+    @Override
+    public void enterWidthExpression(ICSSParser.WidthExpressionContext ctx) {
+        if(isCalculation(ctx)) {
+            ParseTree operatorChild = ctx.children.get(1);
+            String operator = operatorChild.getText();
+
+            switch (operator) {
+                case "*":
+                    currentContainer.push(new MultiplyOperation());
+                    break;
+
+                case "+":
+                    currentContainer.push(new AddOperation());
+                    break;
+
+                case "-":
+                    currentContainer.push(new SubtractOperation());
+                    break;
+
+                default:
+                    throw new UnsupportedOperationException();
+            }
+        }
+    }
+
+    @Override
+    public void exitWidthExpression(ICSSParser.WidthExpressionContext ctx) {
+        if(isCalculation(ctx)) {
+	        handleExit();
+        }
+    }
+
+    private void handleExit() {
 		ASTNode currentNode = currentContainer.pop();
 		(currentContainer.peek()).addChild(currentNode);
 	}
@@ -203,5 +251,9 @@ public class ASTListener extends ICSSBaseListener {
         declaration.property = property;
 
         currentContainer.push(declaration);
+    }
+
+    private boolean isCalculation(ParserRuleContext ctx) {
+        return ctx.children != null && ctx.children.size() > 1;
     }
 }
