@@ -3,16 +3,11 @@ grammar ICSS;
 stylesheet: variableDef* something* EOF;
 
 variableDef
-    : 'let' variableKey 'is' variableVal CLOSE_SIGN
+    : 'let' variableKey 'is' valueExpression CLOSE_SIGN
     ;
 
 variableKey
     : '$'VARIABLE_NAME
-    ;
-
-variableVal
-    : hexVal
-    | amount
     ;
 
 block
@@ -24,7 +19,7 @@ switchRule
     ;
 
 switchCase
-    : CASE amountScalar block
+    : CASE valueAmount block
     ;
 
 switchDefault
@@ -43,6 +38,7 @@ stylerule
 declaration
     : colorDeclaration
     | widthDeclaration
+    | heightDeclaration
     ;
 
 colorDeclaration
@@ -53,19 +49,28 @@ widthDeclaration
     : WIDTH_KW KV_SEP valueExpression CLOSE_SIGN
     ;
 
+heightDeclaration
+    : HEIGHT_KW KV_SEP valueExpression CLOSE_SIGN
+    ;
+
 
 valueExpression
-    : amount
-    | hexVal
+    : valueAmount
     | variableKey
     | valueExpression '*' valueExpression
     | valueExpression '+' valueExpression
     | valueExpression '-' valueExpression
     ;
 
+valueAmount
+    : amount
+    | hexVal
+    ;
+
 amount
     : amountPx
-    | amountScalar;
+    | amountScalar
+    ;
 
 amountPx
     : NUMBER 'px'
@@ -122,6 +127,10 @@ KV_SEP
 
 WIDTH_KW
     : 'width'
+    ;
+
+HEIGHT_KW
+    : 'height'
     ;
 
 COLOR_KEY

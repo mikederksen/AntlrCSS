@@ -157,6 +157,16 @@ public class ASTListener extends ICSSBaseListener {
     }
 
     @Override
+    public void enterHeightDeclaration(ICSSParser.HeightDeclarationContext ctx) {
+        pushDeclaration(ctx.HEIGHT_KW().toString());
+    }
+
+    @Override
+    public void exitHeightDeclaration(ICSSParser.HeightDeclarationContext ctx) {
+        handleExit();
+    }
+
+    @Override
     public void enterColorDeclaration(ICSSParser.ColorDeclarationContext ctx) {
         pushDeclaration(ctx.COLOR_KEY().toString());
     }

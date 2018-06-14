@@ -4,6 +4,9 @@ import nl.han.ica.icss.ast.AST;
 import nl.han.ica.icss.ast.ASTNode;
 import nl.han.ica.icss.ast.ConstantDefinition;
 import nl.han.ica.icss.ast.ConstantReference;
+import nl.han.ica.icss.ast.Expression;
+import nl.han.ica.icss.ast.SwitchValueCase;
+import nl.han.ica.icss.ast.Switchrule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +24,7 @@ public class Checker {
 
         findConstantDefinitions(ast.root);
         findConstantReferences(ast.root);
+        checkSwitchTypes(ast.root);
 
         ast.symboltable = symboltable;
         ast.constantReferences = constantreferences;
@@ -82,6 +86,29 @@ public class Checker {
             declarations.add(referenceParent);
 
             constantreferences.put(key, declarations);
+        }
+    }
+
+    private void checkSwitchTypes(ASTNode currentNode) {
+
+        if(currentNode != null) {
+            if(currentNode instanceof Switchrule) {
+                Switchrule switchrule = (Switchrule)currentNode;
+
+                ConstantReference matchReference = (ConstantReference) switchrule.match;
+                final Class<? extends Expression> matchType = symboltable.get(matchReference.name).expression.getClass();
+
+                switchrule.valueCases
+                        .forEach(v -> checkSwitchValueCaseType(v, matchType));
+            } else {
+                currentNode.getChildren().forEach(this::checkSwitchTypes);
+            }
+        }
+    }
+
+    private void checkSwitchValueCaseType(SwitchValueCase valueCase, Class<? extends Expression> matchType) {
+        if(!valueCase.value.getClass().isAssignableFrom(matchType)) {
+            valueCase.setError("Type of value case '" + valueCase.value.toString() + "' does not correspond to the switch match type");
         }
     }
 }
